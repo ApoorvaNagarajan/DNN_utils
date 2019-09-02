@@ -106,7 +106,7 @@ def _parse_image_function(example_proto):
 
 
 
-def create_dataset(fileName, num_img, batch_size, img_shape, num_classes):
+def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
   
