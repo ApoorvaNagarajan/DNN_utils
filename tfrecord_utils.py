@@ -17,7 +17,7 @@ import sys
 from google.colab import drive
 from google.colab import files
 
-tf.enable_eager_execution()
+#tf.enable_eager_execution()
 
 """#Utility functions"""
 
