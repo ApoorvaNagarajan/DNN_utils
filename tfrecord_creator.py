@@ -18,7 +18,7 @@ from google.colab import drive
 from google.colab import files
 
 tf.enable_eager_execution()
-drive.mount('/content/drive')
+#drive.mount('/content/drive')
 
 """#Utility functions"""
 
@@ -117,23 +117,22 @@ def parse_tfRecord(fileName):
 
 """#Create tfrecord files for CIFAR10 and store in Google drive"""
 
-create_tfRecord('CIFAR10',trainFile='cifarTfTrain.tfrecords', testFile='cifarTfTest.tfrecords')
+#create_tfRecord('CIFAR10',trainFile='cifarTfTrain.tfrecords', testFile='cifarTfTest.tfrecords')
 
-# Commented out IPython magic to ensure Python compatibility.
-import IPython.display as display
-import matplotlib.pyplot as plt
-import numpy as np
-# % matplotlib inline
+#import IPython.display as display
+#import matplotlib.pyplot as plt
+#import numpy as np
+#% matplotlib inline
 
-dataset = parse_tfRecord('cifarTfTrain.tfrecords')
+#dataset = parse_tfRecord('cifarTfTrain.tfrecords')
 
 
-for parsed_record in dataset.take(1):
-  plt.rcParams['figure.figsize'] = (1,1)
-  f, ax = plt.subplots(1, 1)
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.imshow(parsed_record[0].numpy().reshape(32,32,3).astype('int32'))
-  break
+#for parsed_record in dataset.take(1):
+#  plt.rcParams['figure.figsize'] = (1,1)
+#  f, ax = plt.subplots(1, 1)
+#  ax.set_xticks([])
+#  ax.set_yticks([])
+#  ax.imshow(parsed_record[0].numpy().reshape(32,32,3).astype('int32'))
+#  break
 
 tf.executing_eagerly()
