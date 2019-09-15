@@ -47,7 +47,7 @@ def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
     
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
         
-    if((trainFile != None) && (False == os.path.exists(trainFile)):
+    if((trainFile != None) and (False == os.path.exists(trainFile))):
       for i in range(len(x_train)):
           # Create a feature
           feature = {
@@ -66,7 +66,7 @@ def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
       writerValid.close()
       sys.stdout.flush()
       
-    if((testFile != None) and (False == os.path.exists(testFile)):
+    if((testFile != None) and (False == os.path.exists(testFile))):
       for i in range(len(x_test)):
           # Create a feature
           feature = {
