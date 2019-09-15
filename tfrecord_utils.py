@@ -16,8 +16,7 @@ from keras import backend as k
 import sys
 from google.colab import drive
 from google.colab import files
-
-#tf.enable_eager_execution()
+import os
 
 """#Utility functions"""
 
