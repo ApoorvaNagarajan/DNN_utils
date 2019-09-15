@@ -66,7 +66,7 @@ def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
       writerValid.close()
       sys.stdout.flush()
       
-    if((testFile != None) && (False == os.path.exists(testFile)):
+    if((testFile != None) and (False == os.path.exists(testFile)):
       for i in range(len(x_test)):
           # Create a feature
           feature = {
