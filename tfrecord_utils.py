@@ -45,7 +45,8 @@ def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
   
   if(dataset == 'CIFAR10'): 
     
-    (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+    if(((trainFile != None) and (False == os.path.exists(trainFile))) or ((testFile != None) and (False == os.path.exists(testFile)))):
+      (x_train, y_train), (x_test, y_test) = cifar10.load_data()
         
     if((trainFile != None) and (False == os.path.exists(trainFile))):
       for i in range(len(x_train)):
