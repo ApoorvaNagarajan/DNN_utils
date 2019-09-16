@@ -17,8 +17,10 @@ import sys
 from google.colab import drive
 from google.colab import files
 import os
-#import tensorflow.contrib.eager as tfe
+import functools
 
+
+#import tensorflow.contrib.eager as tfe
 #tf.enable_eager_execution()
 
 """#Utility functions"""
@@ -82,7 +84,7 @@ def convert_to_tfRecord(dataset, trainFile=None, testFile=None):
 
 """#tfrecord file parse function"""
 
-def _parse_image_function(example_proto):
+def _parse_image_function(example_proto,img_shape):
   
   
   # Create a dictionary describing the features.
@@ -93,7 +95,7 @@ def _parse_image_function(example_proto):
 
   # Parse the input tf.Example proto using the dictionary above.
   example = tf.parse_single_example(example_proto, image_feature_description)
-  image = tf.decode_raw(example["image"], tf.uint8)
+  image = tf.reshape(tf.decode_raw(example["image"], tf.uint8),img_shape)
   image = tf.cast(image, tf.float32)
   label = tf.cast(example["label"], tf.int32)
   
@@ -101,11 +103,11 @@ def _parse_image_function(example_proto):
 
 
 
-def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
+def parse_tfRecord(fileName, num_img, batch_size, shape, num_classes):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
   
-  image_dataset = image_dataset.map(_parse_image_function)
+  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape))
           
   # This dataset will go on forever
   image_dataset = image_dataset.repeat()
@@ -123,7 +125,7 @@ def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
   image, label = iterator.get_next()
 
   # Bring your picture back in shape
-  image = tf.reshape(image, img_shape)
+  #image = tf.reshape(image, img_shape)
 
   # Create a one hot array for your labels
   label = tf.one_hot(label, num_classes)
@@ -132,10 +134,10 @@ def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
 
 """#Get TFRecordDataset from tfRecord file"""
 
-def get_dataset(fileName):
+def get_dataset(fileName,shape):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
   
-  image_dataset = image_dataset.map(_parse_image_function)
+  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape))
           
   return image_dataset
