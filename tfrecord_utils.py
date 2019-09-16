@@ -17,6 +17,9 @@ import sys
 from google.colab import drive
 from google.colab import files
 import os
+#import tensorflow.contrib.eager as tfe
+
+#tf.enable_eager_execution()
 
 """#Utility functions"""
 
@@ -28,26 +31,20 @@ def _bytes_feature(value):
 
 """#Convert to tfrecord dataset"""
 
-def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
+def convert_to_tfRecord(dataset, trainFile=None, testFile=None):
   
-  if(trainFile != None):
-    writerTrain = tf.python_io.TFRecordWriter(trainFile)
-    
-  if(validFile != None):
-    writerValid = tf.python_io.TFRecordWriter(validFile)
+  trainExist = os.path.exists(trainFile)
+  testExist = os.path.exists(testFile)
   
-  if(testFile != None):
-    writerTest = tf.python_io.TFRecordWriter(testFile)
+  if(dataset == 'CIFAR10'):   
     
-    
-  # For CIFAR10 dataset
-  
-  if(dataset == 'CIFAR10'): 
-    
-    if(((trainFile != None) and (False == os.path.exists(trainFile))) or ((testFile != None) and (False == os.path.exists(testFile)))):
+    if(((trainFile != None) and (False == trainExist)) or ((testFile != None) and (False == testExist))):
+      print('downloading')
       (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-        
-    if((trainFile != None) and (False == os.path.exists(trainFile))):
+  
+            
+    if((trainFile != None) and (False == trainExist)):
+      writerTrain = tf.python_io.TFRecordWriter(trainFile)
       for i in range(len(x_train)):
           # Create a feature
           feature = {
@@ -62,11 +59,9 @@ def convert_to_tfRecord(dataset, trainFile=None, validFile=None, testFile=None):
       writerTrain.close()
       sys.stdout.flush()
           
-    if(validFile != None):
-      writerValid.close()
-      sys.stdout.flush()
       
-    if((testFile != None) and (False == os.path.exists(testFile))):
+    if((testFile != None) and (False == testExist)):
+      writerTest = tf.python_io.TFRecordWriter(testFile)
       for i in range(len(x_test)):
           # Create a feature
           feature = {
@@ -135,6 +130,8 @@ def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
 
   return image, label
 
+"""#Get TFRecordDataset from tfRecord file"""
+
 def get_dataset(fileName):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
@@ -142,3 +139,35 @@ def get_dataset(fileName):
   image_dataset = image_dataset.map(_parse_image_function)
           
   return image_dataset
+
+"""#Test"""
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+convert_to_tfRecord('CIFAR10',trainFile='cifarTfTrain.tfrecords', testFile='cifarTfTest.tfrecords')
+
+# Commented out IPython magic to ensure Python compatibility.
+import IPython.display as display
+import matplotlib.pyplot as plt
+import numpy as np
+# % matplotlib inline
+
+#(x_train,y_train) = parse_tfRecord('cifarTfTrain.tfrecords',50000,512,[-1,32,32,3],10)
+dataset = get_dataset('cifarTfTrain.tfrecords')
+
+for parsed_record in dataset.take(1):
+  print('here')
+  plt.rcParams['figure.figsize'] = (1,1)
+  f, ax = plt.subplots(1, 1)
+  ax.set_xticks([])
+  ax.set_yticks([])
+  ax.imshow(parsed_record[0].numpy().reshape(32,32,3).astype('int32'))
+
+(x_train,y_train) = parse_tfRecord('cifarTfTrain.tfrecords',50000,512,[-1,32,32,3],10)
+
+plt.rcParams['figure.figsize'] = (1,1)
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(x_train[0].numpy().reshape(32,32,3).astype('int32'))
