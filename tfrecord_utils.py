@@ -91,7 +91,7 @@ def _parse_image_function(example_proto):
   
   
   # Create a dictionary describing the features.
-  image_feature_description = {
+  image_feature_descriptioget_datasetn = {
         "image": tf.FixedLenFeature([], tf.string),
         "label": tf.FixedLenFeature([], tf.int64)
   }
@@ -134,3 +134,11 @@ def parse_tfRecord(fileName, num_img, batch_size, img_shape, num_classes):
   label = tf.one_hot(label, num_classes)
 
   return image, label
+
+def get_dataset(fileName):
+  
+  image_dataset = tf.data.TFRecordDataset(fileName)
+  
+  image_dataset = image_dataset.map(_parse_image_function)
+          
+  return image_dataset
