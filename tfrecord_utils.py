@@ -139,35 +139,3 @@ def get_dataset(fileName):
   image_dataset = image_dataset.map(_parse_image_function)
           
   return image_dataset
-
-"""#Test"""
-
-from google.colab import drive
-drive.mount('/content/drive')
-
-convert_to_tfRecord('CIFAR10',trainFile='cifarTfTrain.tfrecords', testFile='cifarTfTest.tfrecords')
-
-# Commented out IPython magic to ensure Python compatibility.
-import IPython.display as display
-import matplotlib.pyplot as plt
-import numpy as np
-# % matplotlib inline
-
-#(x_train,y_train) = parse_tfRecord('cifarTfTrain.tfrecords',50000,512,[-1,32,32,3],10)
-dataset = get_dataset('cifarTfTrain.tfrecords')
-
-for parsed_record in dataset.take(1):
-  print('here')
-  plt.rcParams['figure.figsize'] = (1,1)
-  f, ax = plt.subplots(1, 1)
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.imshow(parsed_record[0].numpy().reshape(32,32,3).astype('int32'))
-
-(x_train,y_train) = parse_tfRecord('cifarTfTrain.tfrecords',50000,512,[-1,32,32,3],10)
-
-plt.rcParams['figure.figsize'] = (1,1)
-f, ax = plt.subplots(1, 1)
-ax.set_xticks([])
-ax.set_yticks([])
-ax.imshow(x_train[0].numpy().reshape(32,32,3).astype('int32'))
