@@ -91,7 +91,7 @@ def _parse_image_function(example_proto):
   
   
   # Create a dictionary describing the features.
-  image_feature_descriptioget_datasetn = {
+  image_feature_description = {
         "image": tf.FixedLenFeature([], tf.string),
         "label": tf.FixedLenFeature([], tf.int64)
   }
