@@ -119,7 +119,7 @@ def parse_tfRecord(fileName, num_img, batch_size, shape, num_classes):
   image_dataset = image_dataset.batch(batch_size)
 
   # Create an iterator
-  iterator = image_dataset.make_one_shot_iterator()
+  iterator = tf.compat.v1.data.make_one_shot_iterator(image_dataset)#.make_one_shot_iterator()
 
   # Create your tf representation of the iterator
   image, label = iterator.get_next()
