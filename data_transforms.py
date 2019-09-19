@@ -10,7 +10,7 @@ Original file is located at
 """
 
 import tensorflow as tf
-tf.enable_eager_execution()
+#tf.enable_eager_execution()
 import numpy as np
 
 """#Affine transform"""
@@ -246,3 +246,57 @@ def random_pad_crop(x: tf.Tensor, pad_size: int) -> tf.Tensor:
     x = tf.pad(x, [[pad_size, pad_size], [pad_size, pad_size], [0, 0]])
     x = tf.random_crop(x, [shape[0], shape[1], 3])
     return x
+
+"""#Test"""
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+!git clone https://github.com/ApoorvaNagarajan/DNN_utils.git
+
+from DNN_utils import tfrecord_utils
+
+NUM_CLASSES = 10 
+IMG_SHAPE=[-1, 32, 32, 3]
+NUM_TRAIN_IMG = 50000
+BATCH_SIZE = 128
+train_x, train_y = tfrecord_utils.parse_tfRecord('/content/drive/My Drive/datasets/cifarTfTrain.tfrecords', NUM_TRAIN_IMG, BATCH_SIZE, IMG_SHAPE, NUM_CLASSES)
+
+# rotate
+
+print(train_x[0].shape)
+rotImg = rotate(train_x[0],45)
+
+cutImg = cutOut(train_x[0],5,5,0)
+
+flip = randomFlip(train_x[0])
+
+rpc = random_pad_crop(train_x[0],10)
+
+# Commented out IPython magic to ensure Python compatibility.
+import IPython.display as display
+import matplotlib.pyplot as plt
+import numpy as np
+# % matplotlib inline
+
+plt.rcParams['figure.figsize'] = (1,2)
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(train_x[0].numpy().astype('int32'))
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(rotImg.numpy())
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(cutImg.numpy().astype('int32'))
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(flip.numpy().astype('int32'))
+f, ax = plt.subplots(1, 1)
+ax.set_xticks([])
+ax.set_yticks([])
+ax.imshow(rpc.numpy().astype('int32'))
