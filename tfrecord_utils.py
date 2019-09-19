@@ -95,7 +95,7 @@ def _parse_image_function(example_proto,img_shape):
 
   # Parse the input tf.Example proto using the dictionary above.
   example = tf.io.parse_single_example(example_proto, image_feature_description)
-  image = tf.reshape(tf.decode_raw(example["image"], tf.uint8),img_shape)
+  image = tf.reshape(tf.io.decode_raw(example["image"], tf.uint8),img_shape)
   image = tf.cast(image, tf.float32)
   label = tf.cast(example["label"], tf.int32)
   
@@ -141,4 +141,3 @@ def get_dataset(fileName,shape):
   image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape))
           
   return image_dataset
-
