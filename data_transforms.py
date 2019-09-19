@@ -10,6 +10,7 @@ Original file is located at
 """
 
 import tensorflow as tf
+tf.enable_eager_execution()
 import numpy as np
 
 """#Affine transform"""
@@ -225,7 +226,7 @@ def randomFlip(img):
   
   flipLR = tf.image.random_flip_left_right(img)
   
-  return  tf.image.rot90(flipLR, tf.random_uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
+  return  tf.image.rot90(flipLR, tf.random.uniform(shape=[], minval=0, maxval=4, dtype=tf.int32))
 
 """#Random Pad Crop"""
 
