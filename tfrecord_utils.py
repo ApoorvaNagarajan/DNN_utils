@@ -84,7 +84,7 @@ def convert_to_tfRecord(dataset, trainFile=None, testFile=None):
 
 """#tfrecord file parse function"""
 
-def _parse_image_function(example_proto,img_shape):
+def _parse_image_function(example_proto,img_shape,num_classes):
   
   
   # Create a dictionary describing the features.
@@ -97,7 +97,7 @@ def _parse_image_function(example_proto,img_shape):
   example = tf.io.parse_single_example(example_proto, image_feature_description)
   image = tf.reshape(tf.io.decode_raw(example["image"], tf.uint8),img_shape)
   image = tf.cast(image, tf.float32)
-  label = tf.cast(example["label"], tf.int32)
+  label = tf.one_hot(tf.cast(example["label"], tf.int32), num_classes)
   
   return image, label
 
@@ -107,7 +107,7 @@ def parse_tfRecord(fileName, num_img, batch_size, shape, num_classes):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
   
-  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape))
+  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape,num_classes=num_classes))
           
   # This dataset will go on forever
   image_dataset = image_dataset.repeat()
@@ -128,16 +128,16 @@ def parse_tfRecord(fileName, num_img, batch_size, shape, num_classes):
   #image = tf.reshape(image, img_shape)
 
   # Create a one hot array for your labels
-  label = tf.one_hot(label, num_classes)
+  #label = tf.one_hot(label, num_classes)
 
   return image, label
 
 """#Get TFRecordDataset from tfRecord file"""
 
-def get_dataset(fileName,shape):
+def get_dataset(fileName,shape, num_classes):
   
   image_dataset = tf.data.TFRecordDataset(fileName)
   
-  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape))
+  image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape, num_classes= num_classes))
           
   return image_dataset
