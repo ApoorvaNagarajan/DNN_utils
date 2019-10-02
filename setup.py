@@ -1,14 +1,19 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
-setup(name='DNN_utils',
-      version='1.0',
-      description='My DNN utility',
-      url='https://github.com/ApoorvaNagarajan/DNN_utils',
-      author='Apoorva Nagarajan',
-      author_email='apoorvanagarajan26@gmail.com',
-      license='MIT',
-      packages=['DNN_utils'],
-      install_requires=[
-          'keras_applications>=1.0.7,<=1.0.8',
-      ],
-      zip_safe=False)
+setup(
+    name = 'DNN_utils',
+    version = '0.1.0',
+    url = '',
+    description = '',
+    packages = find_packages(),
+    install_requires = [
+        # Github Private Repository - needs entry in `dependency_links`
+        'DNN_utils'
+    ],
+
+    dependency_links=[
+        # Make sure to include the `#egg` portion so the `install_requires` recognizes the package
+        'git+ssh://git@github.com/ApoorvaNagarajan/DNN_utils.git#egg=DNN_utils-0.1'
+    ]
+
+)
