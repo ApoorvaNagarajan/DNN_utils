@@ -250,5 +250,5 @@ def random_pad_crop(x: tf.Tensor, pad_size: int) -> tf.Tensor:
 """#Resize"""
 
 def resize_img(x: tf.Tensor, shape) -> tf.Tensor:    
-    y = tf.image.resize_bilinear(x, shape)
-    return y
+    y = tf.image.resize_bilinear(tf.reshape(x,[1,x.shape[0],x.shape[1],x.shape[2]]), shape)
+    return tf.reshape(y, [y.shape[1],y.shape[2],y.shape[3]])
