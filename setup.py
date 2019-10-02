@@ -13,7 +13,7 @@ setup(
 
     dependency_links=[
         # Make sure to include the `#egg` portion so the `install_requires` recognizes the package
-        'git+ssh://git@github.com/ApoorvaNagarajan/DNN_utils.git#egg=DNN_utils-0.1'
+        'git+ssh://git@github.com/ApoorvaNagarajan/DNN_utils.git#egg=DNN_utils'
     ]
 
 )
