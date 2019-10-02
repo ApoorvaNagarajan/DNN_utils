@@ -6,6 +6,7 @@ setup(
     url = '',
     description = '',
     packages = find_packages(),
+    include_package_data=True
     install_requires = [
         # Github Private Repository - needs entry in `dependency_links`
         'DNN_utils'
