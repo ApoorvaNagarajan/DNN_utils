@@ -11,6 +11,7 @@ Original file is located at
 
 import keras
 from keras.datasets import cifar10
+from keras.datasets import cifar100
 import tensorflow as tf
 from keras import backend as k
 import sys
@@ -41,7 +42,6 @@ def convert_to_tfRecord(dataset, trainFile=None, testFile=None):
   if(dataset == 'CIFAR10'):   
     
     if(((trainFile != None) and (False == trainExist)) or ((testFile != None) and (False == testExist))):
-      print('downloading')
       (x_train, y_train), (x_test, y_test) = cifar10.load_data()
   
             
@@ -76,7 +76,47 @@ def convert_to_tfRecord(dataset, trainFile=None, testFile=None):
           # Serialize to string and write on the file
           writerTest.write(example.SerializeToString())
       writerTest.close()
-      sys.stdout.flush()          
+      sys.stdout.flush()
+      
+ 
+  elif(dataset == 'CIFAR100'):   
+    
+    if(((trainFile != None) and (False == trainExist)) or ((testFile != None) and (False == testExist))):
+      (x_train, y_train), (x_test, y_test) = cifar100.load_data()
+  
+            
+    if((trainFile != None) and (False == trainExist)):
+      writerTrain = tf.python_io.TFRecordWriter(trainFile)
+      for i in range(len(x_train)):
+          # Create a feature
+          feature = {
+              'image': _bytes_feature(x_train[i].tostring()),
+              'label': _int64_feature(y_train[i])
+          }
+          # Create an example protocol buffer
+          example = tf.train.Example(features=tf.train.Features(feature=feature))
+
+          # Serialize to string and write on the file
+          writerTrain.write(example.SerializeToString())
+      writerTrain.close()
+      sys.stdout.flush()
+          
+      
+    if((testFile != None) and (False == testExist)):
+      writerTest = tf.python_io.TFRecordWriter(testFile)
+      for i in range(len(x_test)):
+          # Create a feature
+          feature = {
+              'image': _bytes_feature(x_test[i].tostring()),
+              'label': _int64_feature(y_test[i])
+          }
+          # Create an example protocol buffer
+          example = tf.train.Example(features=tf.train.Features(feature=feature))
+
+          # Serialize to string and write on the file
+          writerTest.write(example.SerializeToString())
+      writerTest.close()
+      sys.stdout.flush()
     
    
   else:
