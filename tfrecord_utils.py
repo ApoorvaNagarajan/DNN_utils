@@ -181,3 +181,41 @@ def get_dataset(fileName,shape, num_classes):
   image_dataset = image_dataset.map(functools.partial(_parse_image_function,img_shape=shape, num_classes= num_classes))
           
   return image_dataset
+
+"""#Plain Parse"""
+
+def _parse_image_function_plain(example_proto,img_shape):
+  
+  
+  # Create a dictionary describing the features.
+  image_feature_description = {
+        "image": tf.io.FixedLenFeature([], tf.string),
+        "label": tf.io.FixedLenFeature([], tf.int64)
+  }
+
+  # Parse the input tf.Example proto using the dictionary above.
+  example = tf.io.parse_single_example(example_proto, image_feature_description)
+  image = tf.reshape(tf.io.decode_raw(example["image"], tf.uint8),img_shape)
+  image = tf.cast(image, tf.float32)
+  label = tf.cast(example["label"], tf.int32)
+  
+  return image, label
+
+
+
+def parse_tfRecord_plain(fileName, num_img, shape):
+  
+  image_dataset = tf.data.TFRecordDataset(fileName)
+  
+  image_dataset = image_dataset.map(functools.partial(_parse_image_function_plain,img_shape=shape))
+          
+  # Set the entire dataset as a batch
+  image_dataset = image_dataset.batch(num_img)
+
+  # Create an iterator
+  iterator = tf.compat.v1.data.make_one_shot_iterator(image_dataset)#.make_one_shot_iterator()
+
+  # Create your tf representation of the iterator
+  image, label = iterator.get_next()
+
+  return image, label
