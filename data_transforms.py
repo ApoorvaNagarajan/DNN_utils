@@ -180,7 +180,7 @@ def rotate(img, angle):
 
 """#Cutout"""
 
-def cutOut(img, cutOut_ht, cutOut_wd, mode):
+def cutOut(img, cutOut_ht, cutOut_wd, v_l=0, v_h=1):
   
     """
     
@@ -188,30 +188,16 @@ def cutOut(img, cutOut_ht, cutOut_wd, mode):
     Arguments: img        - inpt image tensor
                cutOut_ht  - cut out window height
                cutOut_wd  - cut out window width
-               mode       - 0 : replace by zero
-                            1 : replace by 128
-                            2 : replace by 0.5
-                            3 : replace by mean of the image
     
     """
   
     imgShape = tf.shape(img)
   
     # cutout window random starting coordinates
-    y0 = tf.random.uniform([], 0, imgShape[0] + 1 - cutOut_ht, dtype=tf.int32)
-    x0 = tf.random.uniform([], 0, imgShape[1] + 1 - cutOut_wd, dtype=tf.int32)
-    
-    if(0 == mode):
-      cutoutVal = 0
-    elif(1 == mode):
-      cutoutVal = 128
-    elif(2 == mode):
-      cutoutVal = 0.5
-    else:
-      val = 0#tf.mean(img)
-      cutoutVal = val
-    
-    replacement = tf.fill([cutOut_ht,cutOut_wd, imgShape[2]],tf.cast(cutoutVal,tf.float32))
+    y0 = tf.random.uniform([], 0, imgShape[0] - cutOut_ht, dtype=tf.int32)
+    x0 = tf.random.uniform([], 0, imgShape[1] - cutOut_wd, dtype=tf.int32)
+
+    replacement = tf.random.uniform([cutOut_ht,cutOut_wd, imgShape[2]], v_l, v_h)
     size= tf.shape(replacement) 
         
     begin = [x0, y0, 0]
